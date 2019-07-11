@@ -40,6 +40,14 @@ u32 SweepMaxFre = 10000;
 u32 SweepStepFre = 100;
 u16 SweepTime = 1;//ms
 u8 SweepFlag = 0;
+u32 SinFre = 100000000;
+u8 showstr[StrMax]={0};
+u32 Sinamp = 100;
+u32 SquareFre = 100000;
+u32 TriangularFre = 100000;
+
+extern const unsigned char ramdata_Square[4096];
+extern const unsigned char ramdata_swatooth[4096];
 
 u8 Task_Delay(u32 delay_time, u8* delay_ID)
 {
@@ -210,6 +218,12 @@ void Set_PointFre(u32 Key_Value, u8* Task_ID)
 		case 1: 
 			Task3_SweepFre(Key_Value);
 			break;
+	  case 2: 
+			Task1_Square(Key_Value);
+			break;
+		 case 3: 
+			Task2_Triangular(Key_Value);
+			break;
 	}
 	//其他处理
 	if(Task_Index != 1) SweepFlag=0;//
@@ -221,42 +235,124 @@ void Set_PointFre(u32 Key_Value, u8* Task_ID)
 
 void Task0_PointFre(u32 Key_Value)//正弦波 (10M) 0-100 000 000
 {
-	static u32 SinFre = 400000000;
-	u8 showstr[StrMax]={0};
 	
 	if(Task_First)
 	{
 		Task_First = 0;
 		Key_Value = K_2_S;
-		sprintf(fre_buf, "%9d", SinFre);//第一次 进入
+		Param_Mode %= 2;//计算参数模式，以便装入初始值
+		if(Param_Mode == 0) sprintf(fre_buf, "%9d", SinFre);
+		if(Param_Mode == 1) sprintf(fre_buf, "%4d", Sinamp);
 		LCD_Show_CEStr(64-8*3,0,"正弦波");
 		_return=1;
 	}
 	if(Key_Value != K_NO)
-	{
-		//判断
-		P_Index = P_Index%9;//数据位数
+	{ if(Param_Mode == 0)//最小频率设置
+		{
+			P_Index %= 9;//参数位数
+			
 		SinFre = atol(fre_buf);//字符转换数字，判断上下限
 		if(SinFre>1000000000) SinFre=1000000000;//数据限制
 		if(SinFre<0) SinFre=0;
 		sprintf(fre_buf, "%9d", SinFre);//字符转换
+		}
 		//显示
 		sprintf(showstr, "%9d", SinFre);//字符转换
 		fre_buf_change(showstr);//fre_buf当中 ‘ '->'0'
-		Copybuf2dis(showstr, display, P_Index, 0, 1);
+		if(Param_Mode == 0) Copybuf2dis(showstr, display, P_Index, 0, 1);
+		else Copybuf2dis(showstr, display, P_Index, 0, 0);
 		OLED_ShowString(64-4*11, 3, display);
 		LCD_Show_CEStr(64-4*11+9*8,3,"Hz");
-		//数据处理写入
-		Freq_convert(SinFre);
 		
+
+		
+		//数据处理写入
+		if(Param_Mode == 1)//最大频率设置
+		{
+			P_Index %= 4;//参数位数
+			Sinamp = atol(fre_buf);//字符转换
+			if(Sinamp>1000)Sinamp=1000;//数据限制
+			if(Sinamp<0) Sinamp=0;
+			sprintf(fre_buf, "%4d",Sinamp);//数据重新写入
+		}
+		//显示
+		sprintf(showstr, "%4d", Sinamp);//重新申请缓存显示
+		fre_buf_change(showstr);//fre_buf当中 ‘ '->'0'
+		if(Param_Mode == 1) Copybuf2dis(showstr, display, P_Index, 0, 1);
+		else Copybuf2dis(showstr, display, P_Index, 0, 0);
+		display[5]=0;//只显示4位
+		OLED_ShowString(64-4*11+5*8, 5, display);
+		LCD_Show_CEStr(64-4*11+9*8,5,"mV");
+	
+		
+		
+		Freq_convert(SinFre);
+		Amplitude_convert(Sinamp);
 		_return=1;
 	}
 }
 
 void Task1_Square(u32 Key_Value)//方波 300k
-{}
+{  
+	if(Task_First)
+	{
+		Task_First = 0;
+		Key_Value = K_2_S;
+		sprintf(fre_buf, "%7d", SquareFre);//第一次 进入
+		LCD_Show_CEStr(64-8*3,0,"方波");
+		_return=1;
+	}
+	if(Key_Value != K_NO)
+	{
+		//判断
+		P_Index = P_Index%7;//数据位数
+		SquareFre = atol(fre_buf);//字符转换数字，判断上下限
+		if(SquareFre>1000000) SquareFre=1000000;//数据限制
+		if(SquareFre<0)SquareFre=0;
+		sprintf(fre_buf, "%7d", SquareFre);//字符转换
+		//显示
+		sprintf(showstr, "%7d", SquareFre);//字符转换
+		fre_buf_change(showstr);//fre_buf当中 ‘ '->'0'
+		Copybuf2dis(showstr, display, P_Index, 0, 1);
+		OLED_ShowString(64-4*11, 3, display);
+		LCD_Show_CEStr(64-4*11+7*8,3,"Hz");
+		//数据处理写入
+    Square_wave(SquareFre);
+		_return=1;
+	}
+
+
+}
 void Task2_Triangular(u32 Key_Value)//三角波 1M
-{}
+{
+ if(Task_First)
+	{
+		Task_First = 0;
+		Key_Value = K_2_S;
+		sprintf(fre_buf, "%7d", TriangularFre);//第一次 进入
+		LCD_Show_CEStr(64-8*3,0,"三角波");
+		_return=1;
+	}
+	if(Key_Value != K_NO)
+	{
+		//判断
+		P_Index = P_Index%7;//数据位数
+		TriangularFre = atol(fre_buf);//字符转换数字，判断上下限
+		if(TriangularFre>1000000) TriangularFre=1000000;//数据限制
+		if(TriangularFre<0)TriangularFre=0;
+		sprintf(fre_buf, "%7d",TriangularFre);//字符转换
+		//显示
+		sprintf(showstr, "%7d",TriangularFre);//字符转换
+		fre_buf_change(showstr);//fre_buf当中 ‘ '->'0'
+		Copybuf2dis(showstr, display, P_Index, 0, 1);
+		OLED_ShowString(64-4*11, 3, display);
+		LCD_Show_CEStr(64-4*11+7*8,3,"Hz");
+		//数据处理写入
+    swatooth_wave(TriangularFre);
+		_return=1;
+	}
+
+}
 
 void Task3_SweepFre(u32 Key_Value)//扫频
 {

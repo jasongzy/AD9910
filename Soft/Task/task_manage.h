@@ -4,7 +4,7 @@
 #include "lcd.h"
 #include "key.h"
 
-#define Interface 2//界面总数
+#define Interface 4//界面总数
 #define StrMax    10//缓存数据大小
 
 extern u32 SysTimer;
