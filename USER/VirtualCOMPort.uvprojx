@@ -10,19 +10,20 @@
       <TargetName>VirtualCOMPort</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F103RB</Device>
+          <Device>STM32F103VE</Device>
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IROM(0x08000000,0x20000) IRAM(0x20000000,0x5000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IROM(0x08000000,0x80000) IRAM(0x20000000,0x10000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103RB$Flash\STM32F10x_128.FLM))</FlashDriverDll>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_512 -FS08000000 -FL080000 -FP0($$Device:STM32F103VE$Flash\STM32F10x_512.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:STM32F103RB$Device\Include\stm32f10x.h</RegisterFile>
+          <RegisterFile>$$Device:STM32F103VE$Device\Include\stm32f10x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -32,7 +33,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32F103RB$SVD\STM32F103xx.svd</SFDFile>
+          <SFDFile>$$Device:STM32F103VE$SVD\STM32F103xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -133,10 +134,10 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4099</DriverSelection>
+            <DriverSelection>4104</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
-          <Flash2>Segger\JL2CM3.dll</Flash2>
+          <bUseTDR>1</bUseTDR>
+          <Flash2>BIN\CMSIS_AGDI.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
@@ -244,12 +245,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0x10000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x80000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -274,7 +275,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x80000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -299,7 +300,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0x10000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -335,9 +336,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F10X_MD,USE_STDPERIPH_DRIVER</Define>
+              <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS\CM3;..\CMSIS\CM3\CORE;..\CMSIS\CM3\STARTUP;..\CMSIS\STM32LIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\USB\USBLIB\inc;..\USB\Mass_Storage\inc;..\HARDWARE;..\HARDWARE\LED;..\HARDWARE\tft;..\Com-Rule;..\HARDWARE\AD9834;..\HARDWARE\AD9851;..\HARDWARE\AD9854;..\HARDWARE\AD9954;..\HARDWARE\LCD;..\HARDWARE\ADC;..\HARDWARE\AD9833;..\HARDWARE\DAC7811;..\HARDWARE\KEY;..\HARDWARE\AD5444;..\Soft\Task;..\HARDWARE\DAC8552;..\HARDWARE\MCP410XX;..\HARDWARE\PE4302;..\HARDWARE\ADF4351;..\HARDWARE\ad9910;..\HARDWARE\ad4002;..\HARDWARE\TIMER;..\HARDWARE\ad9910</IncludePath>
+              <IncludePath>..\CMSIS\CM3;..\CMSIS\CM3\CORE;..\CMSIS\CM3\STARTUP;..\CMSIS\STM32LIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\USB\USBLIB\inc;..\USB\Mass_Storage\inc;..\HARDWARE;..\HARDWARE\LED;..\HARDWARE\tft;..\Com-Rule;..\HARDWARE\AD9834;..\HARDWARE\AD9851;..\HARDWARE\AD9854;..\HARDWARE\AD9954;..\HARDWARE\LCD;..\HARDWARE\ADC;..\HARDWARE\AD9833;..\HARDWARE\DAC7811;..\HARDWARE\KEY;..\HARDWARE\AD5444;..\Soft\Task;..\HARDWARE\DAC8552;..\HARDWARE\MCP410XX;..\HARDWARE\PE4302;..\HARDWARE\ADF4351;..\HARDWARE\ad9910;..\HARDWARE\ad4002;..\HARDWARE\TIMER;..\HARDWARE\ad9910;..\HARDWARE\bsp_key</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -572,11 +573,6 @@
               <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
             </File>
             <File>
-              <FileName>key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
-            </File>
-            <File>
               <FileName>timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
@@ -585,6 +581,21 @@
               <FileName>AD9910V1.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\ad9910\AD9910V1.C</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\bsp_key\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>Square.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\Square.c</FilePath>
             </File>
           </Files>
         </Group>

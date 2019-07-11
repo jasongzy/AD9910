@@ -59,38 +59,38 @@ u8 Task_Delay(u32 delay_time, u8* delay_ID)
 		return 0;
 }
 
-//u8 TaskOneToIdel(void)
-//{
-//	static u8 delay_ID0 = 0;
-//	static u8 delay_ID1 = 0;
-//	static u8 delay_ID2 = 0;
-//	static u8 delay_ID3 = 0;
-//	u8 delay_arrive0 = 0;
-//	u8 delay_arrive1 = 0;
-//	u8 delay_arrive2 = 0;
-//	u8 delay_arrive3 = 0;
-//	
-//	delay_arrive0 = Task_Delay(100, &delay_ID0);
-//	delay_arrive1 = Task_Delay(100, &delay_ID1);
-//	delay_arrive2 = Task_Delay(100, &delay_ID2);
-//	delay_arrive3 = Task_Delay(100, &delay_ID3);
-//	if((delay_arrive0 == 0) && (delay_ID0 == 0))
-//		return 0;
-//	else if((delay_arrive0) && (delay_ID0))
-//	{
-//			//执行本延时后代码
-//	}
-//		
-//	
-//	
-//	if(delay_ID0&&delay_ID1&&delay_ID2&&delay_ID3)
-//	{
-//		delay_ID0 = 0;
-//		delay_ID1 = 0;
-//		delay_ID2 = 0;
-//		delay_ID3 = 0;
-//	}
-//}
+u8 TaskOneToIdel(void)
+{
+	static u8 delay_ID0 = 0;
+	static u8 delay_ID1 = 0;
+	static u8 delay_ID2 = 0;
+	static u8 delay_ID3 = 0;
+	u8 delay_arrive0 = 0;
+	u8 delay_arrive1 = 0;
+	u8 delay_arrive2 = 0;
+	u8 delay_arrive3 = 0;
+	
+	delay_arrive0 = Task_Delay(100, &delay_ID0);
+	delay_arrive1 = Task_Delay(100, &delay_ID1);
+	delay_arrive2 = Task_Delay(100, &delay_ID2);
+	delay_arrive3 = Task_Delay(100, &delay_ID3);
+	if((delay_arrive0 == 0) && (delay_ID0 == 0))
+		return 0;
+	else if((delay_arrive0) && (delay_ID0))
+	{
+			//执行本延时后代码
+	}
+		
+	
+	
+	if(delay_ID0&&delay_ID1&&delay_ID2&&delay_ID3)
+	{
+		delay_ID0 = 0;
+		delay_ID1 = 0;
+		delay_ID2 = 0;
+		delay_ID3 = 0;
+	}
+}
 
 u8 TaskCycleDelay(u32 delay_time, u8* Last_delay_ID, u8* Self_delay_ID)
 {

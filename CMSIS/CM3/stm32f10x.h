@@ -51,7 +51,8 @@
 #define __STM32F10x_H
 
 #ifdef __cplusplus
- extern "C" {
+
+ extern "C" 
 #endif 
   
 /** @addtogroup Library_configuration_section
@@ -291,7 +292,7 @@ typedef enum IRQn
   RTCAlarm_IRQn               = 41,     /*!< RTC Alarm through EXTI Line Interrupt                */
   CEC_IRQn                    = 42,     /*!< HDMI-CEC Interrupt                                   */
   TIM6_DAC_IRQn               = 54,     /*!< TIM6 and DAC underrun Interrupt                      */
-  TIM7_IRQn                   = 55      /*!< TIM7 Interrupt                                       */       
+  TIM7_IRQn                   = 55,     /*!< TIM7 Interrupt                                       */       
 #endif /* STM32F10X_MD_VL */
 
 #ifdef STM32F10X_HD
@@ -468,8 +469,8 @@ typedef enum IRQn
   CAN2_RX1_IRQn               = 65,     /*!< CAN2 RX1 Interrupt                                   */
   CAN2_SCE_IRQn               = 66,     /*!< CAN2 SCE Interrupt                                   */
   OTG_FS_IRQn                 = 67      /*!< USB OTG FS global Interrupt                          */
-#endif /* STM32F10X_CL */     
-} IRQn_Type;
+#endif /* STM32F10X_CL */   
+}IRQn_Type;
 
 /**
   * @}

@@ -38,12 +38,17 @@
 #define PROFILE2 PCout(5)
 #define CS  PBout(10)// 
 
-//void Init_AD9910(void);  //INIT 9910 
+void Init_AD9910(void);  //INIT 9910 
 //void AD9910WriteByte (unsigned char commond, unsigned char *databyte,unsigned char lengh);
 void AD9110_IOInit(void);
 void Init_ad9910(void);
-void Freq_convert(ulong Freq);										//Ð´ÆµÂÊ
-//void Write_Amplitude(bit Channel,unsigned int Amplitude);	//Ð´·ù¶È
+void Txcfr(void);
+void Freq_convert(ulong Freq);									//Ð´ÆµÂÊ
+void Txramprofile(void);
+void Txramdata(int wave_num);
+void Square_wave(uint Sample_interval);//·½²¨;
+void Sawtooth_wave(uint Sample_interval);//Èý½Ç²¨
+void Write_Amplitude(uint Amp);
 
 #endif
 
