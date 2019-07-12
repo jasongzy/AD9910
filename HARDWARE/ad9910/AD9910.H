@@ -44,6 +44,12 @@ void AD9110_IOInit(void);
 void Init_ad9910(void);
 void Freq_convert(ulong Freq);										//Ð´ÆµÂÊ
 void Amp_convert(unsigned int Amplitude);					//Ð´·ù¶È
+void Txcfr(void);
+void Txramprofile(void);
+void Txramdata(int wave_num);
+void Square_wave(uint Sample_interval);//·½²¨;
+void Sawtooth_wave(uint Sample_interval);//Èý½Ç²¨
+void SweepFre(ulong SweepMinFre, ulong SweepMaxFre, ulong SweepStepFre, ulong SweepTime);//É¨Æµ
 
 #endif
 

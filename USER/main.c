@@ -25,6 +25,10 @@ https://shop110336474.taobao.com/?spm=a230r.7195193.1997079397.2.Ic3MRJ
 
 char str[30]; //显示缓存
 extern u8 _return;
+
+extern uchar cfr2[4]; //cfr2控制字
+extern uchar cfr1[4]; //cfr1控制字
+
 int main(void)
 {
 	//	u16 i=0;
@@ -53,36 +57,30 @@ int main(void)
 				   //		Set_PointFre(Keycode, 0);//按键处理
 				   //		if(_return){_return=0;LCD_Refresh_Gram();}//更新显示
 
-		if (PBin(11) == 0)
+		if (PBin(11) == 0) //单频正弦
 		{
-			//			delay_ms(5);
-			//			cfr1[0] = 0x00; //RAM 失能
-			//			cfr2[1] = 0x00; //DRG 失能
-			//			Txcfr(); //发送cfrx控制字
-			//			Write_Amplitude(500); //写幅度，输入范围：1-650 mV
-			//			Freq_convert(100000); //写频率，输入范围：1-400 000 000Hz
-			Amp_convert(500);
-			Freq_convert(20000);
+			cfr1[0] = 0x00; //RAM 失能
+			cfr2[1] = 0x00; //DRG 失能
+			Txcfr(); //发送cfrx控制字
+			Amp_convert(500); //写幅度，输入范围：1-650 mV
+			Freq_convert(20000); //写频率，输入范围：1-400 000 000Hz
 		}
 
-		if (PBin(12) == 0)
+		if (PBin(15) == 0) //扫频
 		{
-			//			delay_ms(5);
-			//			cfr1[0] = 0x00; //RAM 失能
-			//			cfr2[1]=0x0e; //DRG 使能
-			//			Txcfr(); //发送cfrx控制字
-			//			Write_Amplitude(500); //写幅度，输入范围：1-650 mV
-			//			//扫频波下限频率，上限频率，频率步进（单位：Hz），步进时间间隔（单位：us）
-			//			SweepFre(100, 100000, 10, 240000); //步进时间范围：4*(1~65536)ns
+			Amp_convert(200); //写幅度，输入范围：1-650 mV
+		//扫频波下限频率，上限频率，频率步进（单位：Hz），步进时间间隔（单位：us）
+		  SweepFre(100, 100000, 20, 120000); //步进时间范围：4*(1~65536)ns
 		}
 
-		if (PBin(13) == 0)
+		if (PBin(14) == 0) //RAM方波
 		{
-			//			delay_ms(5);
-			//			Square_wave(200); //方波，采样时间间隔输入范围：4*(1~65536)ns
-			//			cfr1[0] = 0xc0; //RAM 使能，幅度控制
-			//			cfr2[1] = 0x00; //DRG 失能
-			//			Txcfr(); //发送cfrx控制字
+			Square_wave(20000); //方波，采样时间间隔输入范围：4*(1~65536)ns
+		}
+		
+		if (PBin(13) == 0) //RAM锯齿波
+		{
+			Sawtooth_wave(20000); //锯齿波，采样时间间隔输入范围：4*(1~65536)ns
 		}
 
 		KEY_EXIT();
