@@ -7,7 +7,7 @@
 时间：2015/11/3
 版本：1.0
 作者：康威电子
-其他：
+其他：程序借鉴正点原子，添加自己的驱动，未经作者许可，不得用于其它任何用途
 
 更多电子需求，请到淘宝店，康威电子竭诚为您服务 ^_^
 https://shop110336474.taobao.com/?spm=a230r.7195193.1997079397.2.Ic3MRJ
@@ -53,7 +53,11 @@ void Timerx_Init(u16 arr,u16 psc)
 }
 
 u32 count=0, count1=0, NowFre=0;
-
+extern u32 SweepMinFre;
+extern u32 SweepMaxFre;
+extern u32 SweepStepFre;
+extern u16 SweepTime;//ms
+extern u8 SweepFlag;
 
 void TIM4_IRQHandler(void)   //TIM3中断
 {
