@@ -23,38 +23,37 @@ https://shop110336474.taobao.com/?spm=a230r.7195193.1997079397.2.Ic3MRJ
 #include "task_manage.h"
 #include "timer.h"
 
-char str[30];	//显示缓存
+char str[30]; //显示缓存
 extern u8 _return;
 int main(void)
 {
-//	u16 i=0;
+	//	u16 i=0;
 
-	MY_NVIC_PriorityGroup_Config(NVIC_PriorityGroup_2);	//设置中断分组
-	delay_init(72);	//初始化延时函数
-	LED_Init();	//初始化LED接口
-	key_init();//按键初始化
-	initial_lcd();//液晶初始化
+	MY_NVIC_PriorityGroup_Config(NVIC_PriorityGroup_2); //设置中断分组
+	delay_init(72);										//初始化延时函数
+	LED_Init();											//初始化LED接口
+	key_init();											//按键初始化
+	initial_lcd();										//液晶初始化
 	LCD_Clear();
 	delay_ms(300);
 	LCD_Refresh_Gram();
-	
-	Timerx_Init(99,71);
-	
+
+	Timerx_Init(99, 71);
+
 	//welcome_KW();
 	//标志排针插线颜色
 	LCD_Clear();
-	LCD_Show_CEStr(0,0,"5");//橙色 orange
+	LCD_Show_CEStr(0, 0, "5"); //橙色 orange
 	//9910初始化
 	Init_ad9910();
 	Amp_convert(300);
 	Freq_convert(20000);
 
-//	while(1)
-//	{
-//		KeyRead();//读取按键值 （内部备注不详，不用管） 
-//		Set_PointFre(Keycode, 0);//按键处理
-//		if(_return){_return=0;LCD_Refresh_Gram();}//更新显示
-//		KEY_EXIT();
-//	}	
+	//	while(1)
+	//	{
+	//		KeyRead();//读取按键值 （内部备注不详，不用管）
+	//		Set_PointFre(Keycode, 0);//按键处理
+	//		if(_return){_return=0;LCD_Refresh_Gram();}//更新显示
+	//		KEY_EXIT();
+	//	}
 }
-
