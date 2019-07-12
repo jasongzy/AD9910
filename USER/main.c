@@ -46,14 +46,45 @@ int main(void)
 	LCD_Show_CEStr(0, 0, "5"); //橙色 orange
 	//9910初始化
 	Init_ad9910();
-	Amp_convert(300);
-	Freq_convert(20000);
 
-	//	while(1)
-	//	{
-	//		KeyRead();//读取按键值 （内部备注不详，不用管）
-	//		Set_PointFre(Keycode, 0);//按键处理
-	//		if(_return){_return=0;LCD_Refresh_Gram();}//更新显示
-	//		KEY_EXIT();
-	//	}
+	while (1)
+	{
+		KeyRead(); //读取按键值 （内部备注不详，不用管）
+				   //		Set_PointFre(Keycode, 0);//按键处理
+				   //		if(_return){_return=0;LCD_Refresh_Gram();}//更新显示
+
+		if (PBin(11) == 0)
+		{
+			//			delay_ms(5);
+			//			cfr1[0] = 0x00; //RAM 失能
+			//			cfr2[1] = 0x00; //DRG 失能
+			//			Txcfr(); //发送cfrx控制字
+			//			Write_Amplitude(500); //写幅度，输入范围：1-650 mV
+			//			Freq_convert(100000); //写频率，输入范围：1-400 000 000Hz
+			Amp_convert(500);
+			Freq_convert(20000);
+		}
+
+		if (PBin(12) == 0)
+		{
+			//			delay_ms(5);
+			//			cfr1[0] = 0x00; //RAM 失能
+			//			cfr2[1]=0x0e; //DRG 使能
+			//			Txcfr(); //发送cfrx控制字
+			//			Write_Amplitude(500); //写幅度，输入范围：1-650 mV
+			//			//扫频波下限频率，上限频率，频率步进（单位：Hz），步进时间间隔（单位：us）
+			//			SweepFre(100, 100000, 10, 240000); //步进时间范围：4*(1~65536)ns
+		}
+
+		if (PBin(13) == 0)
+		{
+			//			delay_ms(5);
+			//			Square_wave(200); //方波，采样时间间隔输入范围：4*(1~65536)ns
+			//			cfr1[0] = 0xc0; //RAM 使能，幅度控制
+			//			cfr2[1] = 0x00; //DRG 失能
+			//			Txcfr(); //发送cfrx控制字
+		}
+
+		KEY_EXIT();
+	}
 }
