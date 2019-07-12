@@ -4,11 +4,12 @@
 #include "sys.h"
 
 uchar cfr1[]={0x00,0x40,0x00,0x00};                                //cfr1控制字
-uchar cfr2[]={0x00,0x00,0x00,0x00};                                //cfr2控制字
+uchar cfr2[]={0x01,0x00,0x00,0x00};                                //cfr2控制字
 uchar cfr3[]={0x05,0x0F,0x41,0x32};                                //cfr3控制字  40M输入  25倍频  VC0=101   ICP=001;
 uchar profile11[]={0x3f,0xff,0x00,0x00,0x25,0x09,0x7b,0x42};       //profile1控制字 0x25,0x09,0x7b,0x42
                                                                    //01振幅控制 23相位控制 4567频率调谐字
 uchar ramprofile0[8] = {0x00};                                     //ramprofile0控制字
+uchar drgparameter[20]={0x00};                                     //DRG参数
 
 extern const unsigned char ramdata_Square[4096];
 extern const unsigned char ramdata_Sawtooth[4096];
@@ -112,6 +113,7 @@ void Txfrc(void)
 
 }         
 
+
 //===================计算频偏字、频率字和发送程序==============================
 void Freq_convert(ulong Freq)
 {
@@ -130,7 +132,8 @@ void Freq_convert(ulong Freq)
 void Write_Amplitude(uint Amp)
 {
 		ulong Temp;
-		Temp = (ulong)Amp*25.20615385;	   //将输入幅度因子分为两个字节  25.20615385=(2^14)/650
+		//Temp = (ulong)Amp*25.20615385;	   //将输入幅度因子分为两个字节  25.20615385=(2^14)/650
+	  Temp = (ulong)Amp*21.84533333;
 		if(Temp > 0x3fff)
 			Temp = 0x3fff;
 		Temp &= 0x3fff;
@@ -196,7 +199,7 @@ void Square_wave(uint Sample_interval)
 {
         ulong Temp;
 
-	      Temp = Sample_interval/4;        //1GHz/4, 采样间隔范围：4*(1~65536)ns
+	      Temp = ((1000000000/(unsigned long int)(Sample_interval)/64/4));        //1GHz/4, 采样间隔范围：4*(1~65536)ns
         if(Temp > 0xffff)
                 Temp = 0xffff;
         ramprofile0[7] = 0x24;
@@ -219,7 +222,7 @@ void Sawtooth_wave(uint Sample_interval)
 {
         ulong Temp;
 
-	      Temp = Sample_interval/4;         //1GHz/4, 采样间隔范围：4*(1~65536)ns
+	      Temp = ((1000000000/(unsigned long int)(Sample_interval)/64/4));         //1GHz/4, 采样间隔范围：4*(1~65536)ns
         if(Temp > 0xffff)
                 Temp = 0xffff;
         ramprofile0[7] = 0x24;
@@ -237,3 +240,82 @@ void Sawtooth_wave(uint Sample_interval)
 				Txcfr();                                               //发送cfrx控制字				
 }
 
+//======================ad9910发送DRG参数程序==================================
+void Txdrg(void)
+{
+	uchar m,k;
+
+	CS=0;
+	txd_8bit(0x0b);                                     //发送数字斜坡限制地址0x0b
+	for (m=0;m<8;m++)
+		txd_8bit(drgparameter[m]); 
+	CS=1;
+	for(k=0;k<10;k++);
+	
+	CS=0;
+	txd_8bit(0x0c);                                     //发送数字斜坡步长地址0x0c
+	for (m=8;m<16;m++)
+		txd_8bit(drgparameter[m]); 
+	CS=1;
+	for(k=0;k<10;k++);
+	
+	CS=0;
+	txd_8bit(0x0d);                                     //发送数字斜坡速率地址0x0d
+	for (m=16;m<20;m++)
+		txd_8bit(drgparameter[m]); 
+	CS=1;
+	for(k=0;k<10;k++);
+	
+	UP_DAT=1;
+	for(k=0;k<10;k++);
+	UP_DAT=0;
+	delay_ms(1);
+}         
+
+//=====================扫频波参数设置和发送程序===================================
+void SweepFre(ulong SweepMinFre, ulong SweepMaxFre, ulong SweepStepFre, ulong SweepTime)
+{
+	ulong Temp1, Temp2, ITemp3, DTemp3, ITemp4, DTemp4;
+	Temp1 = (ulong)SweepMinFre*4.294967296;
+	if(SweepMaxFre > 400000000)
+		SweepMaxFre = 400000000;
+	Temp2 = (ulong)SweepMaxFre*4.294967296;
+	if(SweepStepFre > 400000000)
+		SweepStepFre = 400000000;
+	ITemp3 = (ulong)SweepStepFre*4.294967296;
+	DTemp3 = ITemp3;
+	ITemp4 = (ulong)SweepTime/4;                                    //1GHz/4, 单位：ns
+	if(ITemp4 > 0xffff)
+		ITemp4 = 0xffff;
+	DTemp4 = ITemp4;
+	
+	//扫频上下限
+	drgparameter[7]=(uchar)Temp1;
+	drgparameter[6]=(uchar)(Temp1>>8);
+	drgparameter[5]=(uchar)(Temp1>>16);
+	drgparameter[4]=(uchar)(Temp1>>24);
+	drgparameter[3]=(uchar)Temp2;
+	drgparameter[2]=(uchar)(Temp2>>8);
+	drgparameter[1]=(uchar)(Temp2>>16);
+	drgparameter[0]=(uchar)(Temp2>>24);
+	//频率步进（单位：Hz）
+	drgparameter[15]=(uchar)ITemp3;
+	drgparameter[14]=(uchar)(ITemp3>>8);
+	drgparameter[13]=(uchar)(ITemp3>>16);
+	drgparameter[12]=(uchar)(ITemp3>>24);
+	drgparameter[11]=(uchar)DTemp3;
+	drgparameter[10]=(uchar)(DTemp3>>8);
+	drgparameter[9]=(uchar)(DTemp3>>16);
+	drgparameter[8]=(uchar)(DTemp3>>24);
+	//步进时间间隔（单位：us）
+	drgparameter[19]=(uchar)ITemp4;
+	drgparameter[18]=(uchar)(ITemp4>>8);
+	drgparameter[17]=(uchar)DTemp4;
+	drgparameter[16]=(uchar)(DTemp4>>8);
+	//发送DRG参数
+	Txdrg();
+	cfr1[0] = 0x00; //RAM 失能
+	cfr2[1] = 0x0e; //DRG 使能
+	Txcfr(); //发送cfrx控制字
+	
+}

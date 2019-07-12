@@ -29,7 +29,7 @@ uint8_t Key_Scan(GPIO_TypeDef *GPIOx,uint16_t GPIO_Pin)
 {
 	if( GPIO_ReadInputDataBit(GPIOx, GPIO_Pin) == KEY_ON )
 	{
-		// Ф²╬Ф┴▀Фё─Ф╣▀
+		// кийж╪Л╡Б
 		while( GPIO_ReadInputDataBit(GPIOx, GPIO_Pin) == KEY_ON );
 		return KEY_ON;
 	}

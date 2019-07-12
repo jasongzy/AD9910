@@ -49,6 +49,7 @@ void Txramdata(int wave_num);
 void Square_wave(uint Sample_interval);//·½²¨;
 void Sawtooth_wave(uint Sample_interval);//Èý½Ç²¨
 void Write_Amplitude(uint Amp);
+void SweepFre(ulong SweepMinFre, ulong SweepMaxFre, ulong SweepStepFre, ulong SweepTime);
 
 #endif
 
