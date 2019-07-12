@@ -83,12 +83,12 @@ txd_8bit(0x00);    //发送CFR1控制字地址
 CS=1;  
 for (k=0;k<10;k++);
 	
-//	CS=0;
-//txd_8bit(0x01);    //发送CFR2控制字地址
-// for (m=0;m<4;m++)
-// txd_8bit(cfr2[m]); 
-//CS=1;  
-//for (k=0;k<10;k++);
+	CS=0;
+txd_8bit(0x01);    //发送CFR2控制字地址
+ for (m=0;m<4;m++)
+ txd_8bit(cfr2[m]); 
+CS=1;  
+for (k=0;k<10;k++);
 
  CS=0;
   txd_8bit(0x02);    //发送CFR3控制字地址
@@ -105,12 +105,12 @@ for (k=0;k<10;k++);
 }      
 //=====================================================================
 
-//======================ad9910发送频率值程序===================================
-void Txfrc(void)
+//======================ad9910发送profile0控制字程序===================================
+void Txprodile0(void)
 {uchar m;
 
  CS=0;
-txd_8bit(0x0e);    //发送profile1控制字地址
+txd_8bit(0x0e);    //发送profile0控制字地址
  for (m=0;m<8;m++)
  txd_8bit(profile11[m]); 
  CS=1;
@@ -132,5 +132,18 @@ void Freq_convert(ulong Freq)
 	  profile11[6]=(uchar)(Temp>>8);
 	  profile11[5]=(uchar)(Temp>>16);
 	  profile11[4]=(uchar)(Temp>>24);
-	  Txfrc();
+	  Txprodile0();
+}
+
+//======================计算正弦波幅值(Vpp)和发送程序==============================
+void Amp_convert(uint Amp)
+{
+		ulong Temp;
+		Temp = (ulong)Amp*28.4829;	   //将输入幅度因子分为两个字节  25.20615385=(2^14)/650
+		if(Temp > 0x3fff)
+			Temp = 0x3fff;
+		Temp &= 0x3fff;
+		profile11[1]=(uchar)Temp;
+		profile11[0]=(uchar)(Temp>>8);
+		Txprodile0();
 }

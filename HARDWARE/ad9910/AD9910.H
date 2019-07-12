@@ -43,7 +43,7 @@
 void AD9110_IOInit(void);
 void Init_ad9910(void);
 void Freq_convert(ulong Freq);										//Ð´ÆµÂÊ
-//void Write_Amplitude(bit Channel,unsigned int Amplitude);	//Ð´·ù¶È
+void Amp_convert(unsigned int Amplitude);					//Ð´·ù¶È
 
 #endif
 
