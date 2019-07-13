@@ -122,3 +122,5 @@ USER/*
 !USER/*.uvprojx
 !USER/*.uvoptx
 !USER/*.ini
+
+.vscode
