@@ -1,57 +1,35 @@
-#ifndef __key_H
-#define __key_H
-#include "stm32f10x.h"
-
-#define YES	  1
-#define NO	  0
-
-#define T_10mS	((u32)10)
-#define T_1S	((u32)1000)
-#define T_330mS	((u32)330)
-///////////////////////////////
-#define KEY1BIT GPIO_Pin_0
-#define KEY2BIT GPIO_Pin_1
-#define KEY3BIT GPIO_Pin_2
-#define KEY4BIT GPIO_Pin_3
-#define KEY5BIT GPIO_Pin_4
-
-////////原始码值///////////////
-#define K_1		KEY1BIT
-#define K_2		KEY2BIT
-#define K_3		KEY3BIT
-#define K_4		KEY4BIT
-#define K_5		KEY5BIT
-
-//////////////////////////////
-
-////////码值重映射////////////
-#define K_1_S		0X01        //K_M_S  -->> 按键_中键_短按
-#define K_2_S		0X02
-#define K_3_S		0X03
-#define K_4_S		0X04
-#define K_5_S		0X05
-
-#define K_1_L		0X0B        //K_M_S  -->> 按键_中键_短按
-#define K_2_L		0X0C
-#define K_3_L		0X0D
-#define K_4_L		0X0E
-#define K_5_L		0X0F
-
-#define K_NO		0X00000000
-///////////////////////////////////
+#ifndef __KEY_H
+#define __KEY_H	 
+#include "sys.h"
+//////////////////////////////////////////////////////////////////////////////////	 
+//本程序只供学习使用，未经作者许可，不得用于其它任何用途
+//ALIENTEK精英STM32开发板
+//按键驱动代码	   
+//正点原子@ALIENTEK
+//技术论坛:www.openedv.com
+//修改日期:2012/9/3
+//版本：V1.0
+//版权所有，盗版必究。
+//Copyright(C) 广州市星翼电子科技有限公司 2009-2019
+//All rights reserved									  
+//////////////////////////////////////////////////////////////////////////////////   	 
 
 
-extern u32 KEY_Sys_Timer;
-extern u32 KEY_Time;
-extern u32 key_Trgtime;
-extern u32 KEY_Trg;
-extern u32 KEY_Cont;
-extern u32 Trg_state;
-extern u32 Keycode;
+//#define KEY0 PEin(4)   	//PE4
+//#define KEY1 PEin(3)	//PE3 
+//#define WK_UP PAin(0)	//PA0  WK_UP
 
-void key_init(void);
-u32 KeyRead(void);
-void KEY_EXIT(void);
+#define KEY0  GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4)//读取按键0
+#define KEY1  GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_3)//读取按键1
+#define WK_UP   GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)//读取按键3(WK_UP) 
+
+ 
+
+#define KEY0_PRES 	1	//KEY0按下
+#define KEY1_PRES	  2	//KEY1按下
+#define WKUP_PRES   3	//KEY_UP按下(即WK_UP/KEY_UP)
 
 
+void KEY_Init(void);//IO初始化
+u8 KEY_Scan(u8);  	//按键扫描函数					    
 #endif

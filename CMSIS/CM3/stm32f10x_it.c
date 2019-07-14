@@ -25,7 +25,7 @@
 #include "stm32f10x_it.h"
 
 #include "delay.h"
-#include "led.h"
+//#include "led.h"
 #include "sys.h"
 #include "stm32f10x_tim.h"
 #include "key.h"
@@ -176,21 +176,21 @@ u16 sysbufer = 0;
 u32 SysTimer = 0;
 void TIM3_IRQHandler(void)
 {
-	TIM_ClearFlag(TIM3, TIM_IT_Update);
+//	TIM_ClearFlag(TIM3, TIM_IT_Update);
 
-    KEY_Sys_Timer++;
-    if(KEY_Cont)
-      KEY_Time++;
-    else
-      KEY_Time = 0;
-    ////////////////////////
-    
-    sysbufer++;
-    if(sysbufer == 10)
-    {
-      SysTimer++;       //?10ms????
-      sysbufer = 0;
-    }
+//    KEY_Sys_Timer++;
+//    if(KEY_Cont)
+//      KEY_Time++;
+//    else
+//      KEY_Time = 0;
+//    ////////////////////////
+//    
+//    sysbufer++;
+//    if(sysbufer == 10)
+//    {
+//      SysTimer++;       //?10ms????
+//      sysbufer = 0;
+//    }
 }
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

@@ -336,7 +336,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F10X_MD,USE_STDPERIPH_DRIVER</Define>
+              <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
               <IncludePath>..\CMSIS\CM3;..\CMSIS\CM3\CORE;..\CMSIS\CM3\STARTUP;..\CMSIS\STM32LIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\USB\USBLIB\inc;..\USB\Mass_Storage\inc;..\HARDWARE;..\HARDWARE\LED;..\HARDWARE\tft;..\Com-Rule;..\HARDWARE\AD9834;..\HARDWARE\AD9851;..\HARDWARE\AD9854;..\HARDWARE\AD9954;..\HARDWARE\LCD;..\HARDWARE\ADC;..\HARDWARE\AD9833;..\HARDWARE\DAC7811;..\HARDWARE\KEY;..\HARDWARE\AD5444;..\Soft\Task;..\HARDWARE\DAC8552;..\HARDWARE\MCP410XX;..\HARDWARE\PE4302;..\HARDWARE\ADF4351;..\HARDWARE\ad9910;..\HARDWARE\ad4002;..\HARDWARE\TIMER;..\HARDWARE\ad9910</IncludePath>
             </VariousControls>
@@ -566,6 +566,11 @@
               <FileName>AD9910V1.C</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\ad9910\AD9910V1.C</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\LED\led.c</FilePath>
             </File>
           </Files>
         </Group>
