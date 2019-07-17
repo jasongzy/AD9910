@@ -84,7 +84,7 @@ u8 USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 //bit15，	接收完成标志
 //bit14，	接收到0x0d
 //bit13~0，	接收到的有效字节数目
-u16 USART_RX_STA=0;       //接收状态标记	  
+u16 USART_RX_STA=0;       //接收状态标记（第1位是接收完成标志，第2位是接收到0x0d结束符标志，后14位是接收的有效数据个数，不含结束符）  
   
 void uart_init(u32 bound){
   //GPIO端口设置
@@ -133,20 +133,21 @@ void USART1_IRQHandler(void)                	//串口1中断服务程序
 #if SYSTEM_SUPPORT_OS 		//如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
 	OSIntEnter();    
 #endif
-	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  //接收中断(接收到的数据必须是0x0d 0x0a结尾)
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  //接收中断~~(接收到的数据必须是0x0d 0x0a结尾)~~改为必须以"!"(0x21)结尾
 		{
 		Res =USART_ReceiveData(USART1);	//读取接收到的数据
 		
 		if((USART_RX_STA&0x8000)==0)//接收未完成
 			{
-			if(USART_RX_STA&0x4000)//接收到了0x0d
+			if(USART_RX_STA&0x4000)//接收到了~~0X0d~~0x21
 				{
-				if(Res!=0x0a)USART_RX_STA=0;//接收错误,重新开始
-				else USART_RX_STA|=0x8000;	//接收完成了 
+				//if(Res!=0x0a)USART_RX_STA=0;//接收错误,重新开始
+				//else USART_RX_STA|=0x8000;	//接收完成了
+				USART_RX_STA|=0x8000;	//接收完成了
 				}
-			else //还没收到0X0D
-				{	
-				if(Res==0x0d)USART_RX_STA|=0x4000;
+			else //还没收到~~0X0D~~0x21
+				{
+				if(Res==0x21)USART_RX_STA|=0x4000;
 				else
 					{
 					USART_RX_BUF[USART_RX_STA&0X3FFF]=Res ;

@@ -22,7 +22,7 @@ int main(void)
 	u16 times = 0;
 	u8 flag = 0;
 	u16 len;
-	ulong sf[4];
+	ulong ctrl[4];
 	MY_NVIC_PriorityGroup_Config(NVIC_PriorityGroup_2); //设置中断分组
 	//uart_init(115200);	 //串口初始化为115200
 	uart_init(9600);
@@ -42,6 +42,12 @@ int main(void)
 	//LCD_Show_CEStr(0, 0, "5"); //橙色 orange
 	//9910初始化
 	Init_ad9910();
+	
+	cfr1[0] = 0x00;		 //RAM 失能
+	cfr2[1] = 0x00;		 //DRG 失能
+	Txcfr();			 //发送cfrx控制字
+	Amp_convert(200);	//写幅度，输入范围：1-650 mV
+	Freq_convert(20000); //写频率，输入范围：1-400 000 000Hz
 
 	while (1)
 	{
@@ -53,64 +59,74 @@ int main(void)
 		if (USART_RX_STA & 0x8000)
 		{
 			len = USART_RX_STA & 0x3fff; //得到此次接收到的数据长度
-			if (USART_RX_BUF[0] == 0x41) //串口输入了起始符"A",正弦（e.g. A20#B500#）
+			if (USART_RX_BUF[0] == 0x41) //串口输入了起始符"A",正弦（e.g. A20#B200#!）
 			{
 				cfr1[0] = 0x00; //RAM 失能
 				cfr2[1] = 0x00; //DRG 失能
 				Txcfr();		//发送cfrx控制字
 				//拆分两组数据
 				for (i = 0; USART_RX_BUF[i] != 0x42 && i < len; i++);
-				if (i == len - 1)
+				if (i == len) //未找到第2个起始符
 				{
 					printf("Error!\r\n");
 					USART_RX_STA = 0;
 					continue;
 				}
-				Freq_convert(1000 * toint(USART_RX_BUF, i));
-				Amp_convert(toint(USART_RX_BUF + i, len - i));
-				printf("串口控制：正弦信号\r\n");
+				ctrl[0]=toint(USART_RX_BUF, i);
+				ctrl[1]=toint(USART_RX_BUF + i, len - i);
+				Freq_convert(1000*ctrl[0]);
+				Amp_convert(ctrl[1]);
+				printf("串口控制：正弦信号（%lu kHz / %lu mV）\r\n",ctrl[0],ctrl[1]);
 			}
-			else if (USART_RX_BUF[0] == 0x43) //串口输入了起始符"C",方波（e.g. C20#）
+			else if (USART_RX_BUF[0] == 0x43) //串口输入了起始符"C",方波（e.g. C20#!）
 			{
-				Square_wave(1000 * toint(USART_RX_BUF, len));
-				printf("串口控制：方波信号\r\n");
+				ctrl[0]=toint(USART_RX_BUF, len);
+				Square_wave(1000*ctrl[0]);
+				printf("串口控制：方波信号（%lu kHz）\r\n",ctrl[0]);
 			}
-			else if (USART_RX_BUF[0] == 0x44) //串口输入了起始符"D",锯齿波（e.g. D20#）
+			else if (USART_RX_BUF[0] == 0x44) //串口输入了起始符"D",锯齿波（e.g. D20#!）
 			{
-				Sawtooth_wave(1000 * toint(USART_RX_BUF, len));
-				printf("串口控制：锯齿波信号\r\n");
+				ctrl[0]=toint(USART_RX_BUF, len);
+				Sawtooth_wave(1000*ctrl[0]);
+				printf("串口控制：锯齿波信号（%lu kHz）\r\n",ctrl[0]);
 			}
-			else if (USART_RX_BUF[0] == 0x45) //串口输入了起始符"E",扫频（e.g. E100#F100000#G20#H120#）
+			else if (USART_RX_BUF[0] == 0x45) //串口输入了起始符"E",扫频（e.g. E100#F100000#G20#H120#!）
 			{
 				Amp_convert(200);
 				//拆分四组数据
-				for (i = 0; USART_RX_BUF[i] != 0x46 && i < len - 1; i++);
-				if (i == len - 1)
+				for (i = 0; USART_RX_BUF[i] != 0x46 && i < len; i++);
+				if (i == len) //未找到第2个起始符
 				{
 					printf("Error!\r\n");
 					USART_RX_STA = 0;
 					continue;
 				}
-				sf[0] = toint(USART_RX_BUF, i);
-				for (j = i; USART_RX_BUF[j] != 0x47 && j < len - 1; j++);
-				if (j == len - 1)
+				ctrl[0] = toint(USART_RX_BUF, i);
+				for (j = i; USART_RX_BUF[j] != 0x47 && j < len; j++);
+				if (j == len) //未找到第3个起始符
 				{
 					printf("Error!\r\n");
 					USART_RX_STA = 0;
 					continue;
 				}
-				sf[1] = toint(USART_RX_BUF + i, j - i);
-				for (i = j; USART_RX_BUF[i] != 0x48 && i < len - 1; i++);
-				if (i == len - 1)
+				ctrl[1] = toint(USART_RX_BUF + i, j - i);
+				if (ctrl[0] >= ctrl[1]) //下限高于上限
 				{
 					printf("Error!\r\n");
 					USART_RX_STA = 0;
 					continue;
 				}
-				sf[2] = toint(USART_RX_BUF + j, i - j);
-				sf[3] = toint(USART_RX_BUF + i, len - i);
-				SweepFre(sf[0], sf[1], sf[2], sf[3] * 1000);
-				printf("串口控制：扫频信号\r\n");
+				for (i = j; USART_RX_BUF[i] != 0x48 && i < len; i++);
+				if (i == len) //未找到第4个起始符
+				{
+					printf("Error!\r\n");
+					USART_RX_STA = 0;
+					continue;
+				}
+				ctrl[2] = toint(USART_RX_BUF + j, i - j);
+				ctrl[3] = toint(USART_RX_BUF + i, len - i);
+				SweepFre(ctrl[0], ctrl[1], ctrl[2], ctrl[3] * 1000);
+				printf("串口控制：扫频信号（%lu-%lu Hz / %lu Hz / %lu ms）\r\n",ctrl[0],ctrl[1],ctrl[2],ctrl[3]);
 			}
 			else
 			{
@@ -128,7 +144,7 @@ int main(void)
 				cfr1[0] = 0x00;		 //RAM 失能
 				cfr2[1] = 0x00;		 //DRG 失能
 				Txcfr();			 //发送cfrx控制字
-				Amp_convert(500);	//写幅度，输入范围：1-650 mV
+				Amp_convert(200);	//写幅度，输入范围：1-650 mV
 				Freq_convert(20000); //写频率，输入范围：1-400 000 000Hz
 				printf("按键控制：正弦信号\r\n");
 				break;

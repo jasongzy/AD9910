@@ -8,7 +8,7 @@ ulong toint(u8* a,u8 len)
 {
 	u8 i;
 	ulong b = 0;
-	for(i=1;a[i]!=0x23 && i<len-1;i++) //直到收到结束符#
+	for(i=1;a[i]!=0x23 && i<len;i++) //直到收到结束符#
 	{
 		if((a[i]>=48)&&(a[i]<=57))
 		{
