@@ -20,7 +20,7 @@ int main(void)
 	u16 j = 0;
 	u8 key;
 	u16 times = 0;
-	u8 flag = 0;
+	u8 flag = 0; //按键复用标志
 	u16 len;
 	ulong ctrl[4];
 	MY_NVIC_PriorityGroup_Config(NVIC_PriorityGroup_2); //设置中断分组
