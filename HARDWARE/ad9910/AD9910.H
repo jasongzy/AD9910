@@ -8,7 +8,7 @@
 #ifndef __AD9910_H__
 #define __AD9910_H__
 
-#include "stm32f10x.h"
+#include "stm32f4xx.h"
 
 #define uchar unsigned char
 #define uint unsigned int

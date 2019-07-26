@@ -15,7 +15,7 @@
 **********************************************************/
 
 #include "sys.h"
-#include "stm32f10x.h"
+#include "stm32f4xx.h"
 
 #include "string.h"	//内存操作相关函数库
 #include "math.h"	//数学运算相关函数库

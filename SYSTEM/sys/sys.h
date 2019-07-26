@@ -1,82 +1,57 @@
-/**********************************************************
-* @ File name -> sys.h
-* @ Version   -> V1.0
-* @ Date      -> 12-26-2013
-* @ Brief     -> 系统设置相关的函数头文件
-**********************************************************/
+#ifndef __SYS_H
+#define __SYS_H	 
+#include "stm32f4xx.h" 
+//////////////////////////////////////////////////////////////////////////////////	 
+//本程序只供学习使用，未经作者许可，不得用于其它任何用途
+//ALIENTEK STM32F407开发板
+//系统时钟初始化	
+//正点原子@ALIENTEK
+//技术论坛:www.openedv.com
+//创建日期:2014/5/2
+//版本：V1.0
+//版权所有，盗版必究。
+//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
+//All rights reserved
+//********************************************************************************
+//修改说明
+//无
+////////////////////////////////////////////////////////////////////////////////// 
 
-#ifndef _sys_h_
-#define _sys_h_
 
-/**********************************************************
-                     外部函数头文件                        
-**********************************************************/
-	
-#include "stm32f10x.h"
+//0,不支持ucos
+//1,支持ucos
+#define SYSTEM_SUPPORT_OS		0		//定义系统文件夹是否支持UCOS
+																	    
+	 
+//位带操作,实现51类似的GPIO控制功能
+//具体实现思想,参考<<CM3权威指南>>第五章(87页~92页).M4同M3类似,只是寄存器地址变了.
+//IO口操作宏定义
+#define BITBAND(addr, bitnum) ((addr & 0xF0000000)+0x2000000+((addr &0xFFFFF)<<5)+(bitnum<<2)) 
+#define MEM_ADDR(addr)  *((volatile unsigned long  *)(addr)) 
+#define BIT_ADDR(addr, bitnum)   MEM_ADDR(BITBAND(addr, bitnum)) 
+//IO口地址映射
+#define GPIOA_ODR_Addr    (GPIOA_BASE+20) //0x40020014
+#define GPIOB_ODR_Addr    (GPIOB_BASE+20) //0x40020414 
+#define GPIOC_ODR_Addr    (GPIOC_BASE+20) //0x40020814 
+#define GPIOD_ODR_Addr    (GPIOD_BASE+20) //0x40020C14 
+#define GPIOE_ODR_Addr    (GPIOE_BASE+20) //0x40021014 
+#define GPIOF_ODR_Addr    (GPIOF_BASE+20) //0x40021414    
+#define GPIOG_ODR_Addr    (GPIOG_BASE+20) //0x40021814   
+#define GPIOH_ODR_Addr    (GPIOH_BASE+20) //0x40021C14    
+#define GPIOI_ODR_Addr    (GPIOI_BASE+20) //0x40022014     
 
-#include "string.h"
-#include "stdio.h"
-//#include "alloc.h"
-
-/**********************************************************
-                      动态数据表管理
-**********************************************************
-
-#define MaxSize					100	//设置最大的连续空间
-
-typedef uint16_t	ElemType;	//定义数据类型
-
-typedef struct
-{
-	ElemType *elem;		//顺序表的首地址
-	uint16_t length;	//顺序表的长度（表中元素的个数）
-	uint16_t listsize;	//顺序表占用内存空间的大小（以sizeof(ElemType)为单位，由MaxSize规定）
-}Sqlist;
-																	 */
-/**********************************************************
-                    JTAG模式设置定义
-**********************************************************/
-
-#define JTAG_SWD_Enable			0x00000000	//复位值
-#define JNTRST_Disable			0x00000001	//JNTRST引脚释放
-#define SWD_Enable				0x00000010	//JTAG关闭，SWD开启
-#define JTAG_SWD_Disable		0x00000100	//JTAG和SWD都关闭
-
-/**********************************************************
-                    位带操作相关宏定义
-              参考《CM3权威指南》第87 ~ 92页
-**********************************************************/
-
-#define BITBAND(addr, bitnum)			((addr & 0xF0000000)+0x2000000+((addr &0xFFFFF)<<5)+(bitnum<<2)) 
-#define MEM_ADDR(addr)					*((volatile unsigned long  *)(addr)) 
-#define BIT_ADDR(addr, bitnum)			MEM_ADDR(BITBAND(addr, bitnum)) 
-
-/**********************************************************
-                       GPIO地址映射
-              基地址加上寄存器偏移地址组成
-**********************************************************/
-
-#define GPIOA_ODR_Addr    (GPIOA_BASE+12)	//0x4001080C 
-#define GPIOB_ODR_Addr    (GPIOB_BASE+12)	//0x40010C0C 
-#define GPIOC_ODR_Addr    (GPIOC_BASE+12)	//0x4001100C 
-#define GPIOD_ODR_Addr    (GPIOD_BASE+12)	//0x4001140C 
-#define GPIOE_ODR_Addr    (GPIOE_BASE+12)	//0x4001180C 
-#define GPIOF_ODR_Addr    (GPIOF_BASE+12)	//0x40011A0C    
-#define GPIOG_ODR_Addr    (GPIOG_BASE+12)	//0x40011E0C    
-
-#define GPIOA_IDR_Addr    (GPIOA_BASE+8)	//0x40010808 
-#define GPIOB_IDR_Addr    (GPIOB_BASE+8)	//0x40010C08 
-#define GPIOC_IDR_Addr    (GPIOC_BASE+8)	//0x40011008 
-#define GPIOD_IDR_Addr    (GPIOD_BASE+8)	//0x40011408 
-#define GPIOE_IDR_Addr    (GPIOE_BASE+8)	//0x40011808 
-#define GPIOF_IDR_Addr    (GPIOF_BASE+8)	//0x40011A08 
-#define GPIOG_IDR_Addr    (GPIOG_BASE+8)	//0x40011E08 
-
-/**********************************************************
-             实现单一IO操作，类似于51的IO操作
-                   n值要小于IO具体数目
-**********************************************************/ 
-
+#define GPIOA_IDR_Addr    (GPIOA_BASE+16) //0x40020010 
+#define GPIOB_IDR_Addr    (GPIOB_BASE+16) //0x40020410 
+#define GPIOC_IDR_Addr    (GPIOC_BASE+16) //0x40020810 
+#define GPIOD_IDR_Addr    (GPIOD_BASE+16) //0x40020C10 
+#define GPIOE_IDR_Addr    (GPIOE_BASE+16) //0x40021010 
+#define GPIOF_IDR_Addr    (GPIOF_BASE+16) //0x40021410 
+#define GPIOG_IDR_Addr    (GPIOG_BASE+16) //0x40021810 
+#define GPIOH_IDR_Addr    (GPIOH_BASE+16) //0x40021C10 
+#define GPIOI_IDR_Addr    (GPIOI_BASE+16) //0x40022010 
+ 
+//IO口操作,只对单一的IO口!
+//确保n的值小于16!
 #define PAout(n)   BIT_ADDR(GPIOA_ODR_Addr,n)  //输出 
 #define PAin(n)    BIT_ADDR(GPIOA_IDR_Addr,n)  //输入 
 
@@ -98,45 +73,26 @@ typedef struct
 #define PGout(n)   BIT_ADDR(GPIOG_ODR_Addr,n)  //输出 
 #define PGin(n)    BIT_ADDR(GPIOG_IDR_Addr,n)  //输入
 
-/**********************************************************
-                     外部调用功能函数
-**********************************************************/
+#define PHout(n)   BIT_ADDR(GPIOH_ODR_Addr,n)  //输出 
+#define PHin(n)    BIT_ADDR(GPIOH_IDR_Addr,n)  //输入
 
-void STM32_Flash_Capacity(uint8_t *STMCapa);	//读取芯片闪存容量
+#define PIout(n)   BIT_ADDR(GPIOI_ODR_Addr,n)  //输出 
+#define PIin(n)    BIT_ADDR(GPIOI_IDR_Addr,n)  //输入
 
-void STM32_CPUID(uint8_t *IDbuff);	//读取CPUID
-
-void STM_Clock_Init(uint8_t pll);	//系统时钟初始化
-
-void MY_NVIC_SetVectorTable(uint32_t NVIC_VectTab,uint32_t Offset);	//设置向量表偏移地址
-
-void MY_NVIC_PriorityGroup_Config(uint32_t NVIC_PriorityGroup);	//设置中断分组
-
-void MY_NVIC_Init(uint8_t NVIC_PreemptionPriority,uint8_t NVIC_Subpriority,uint8_t NVIC_Channel,uint32_t NVIC_Group);
-
-
-void MY_RCC_DeInit(void);	//所有时钟寄存器复位
-
-void SYS_Standby(void);	//设置芯片进入待机模式
-
-void SYS_SoftReset(void);	//系统软复位
-
-void STM_JTAG_Set(uint32_t mode);	//JTAG模式设置
-
-
-uint8_t BCD_to_HEX(uint8_t BCD_Data);	//BCD码转为HEX
-
-uint8_t HEX_to_BCD(uint8_t HEX_Data);	//HEX码转为BCD
-
-uint16_t DX_to_HX(uint16_t DX_Data);	//10进制码转为16进制
-
-uint16_t HX_to_DX(uint16_t HX_Data);	//16进制码转为10进制
-
-
-//void Sqlist_Init(Sqlist *LIST);	//初始化数据列表
-//void Sqlist_DeInit(void);	//复位数据列表
-//void InsertElem(Sqlist *L,uint16_t i,ElemType item);	//向一个动态的数据列表插入一个元素
-
-
+//以下为汇编函数
+void WFI_SET(void);		//执行WFI指令
+void INTX_DISABLE(void);//关闭所有中断
+void INTX_ENABLE(void);	//开启所有中断
+void MSR_MSP(u32 addr);	//设置堆栈地址 
 #endif
+
+
+
+
+
+
+
+
+
+
 

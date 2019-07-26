@@ -20,10 +20,9 @@ int main(void)
 	u16 j = 0;
 	u8 key;
 	u16 times = 0;
-	u8 flag = 0; //按键复用标志
 	u16 len;
 	ulong ctrl[4];
-	MY_NVIC_PriorityGroup_Config(NVIC_PriorityGroup_2); //设置中断分组
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置中断分组
 	//uart_init(115200);	 //串口初始化为115200
 	uart_init(9600);
 	delay_init(72); //初始化延时函数
@@ -48,6 +47,8 @@ int main(void)
 	Txcfr();			 //发送cfrx控制字
 	Amp_convert(200);	//写幅度，输入范围：1-650 mV
 	Freq_convert(20000); //写频率，输入范围：1-400 000 000Hz
+	
+	printf("Initialization finished\r\n");
 
 	while (1)
 	{
@@ -58,6 +59,7 @@ int main(void)
 
 		if (USART_RX_STA & 0x8000)
 		{
+			LED1 = 0;
 			len = USART_RX_STA & 0x3fff; //得到此次接收到的数据长度
 			if (USART_RX_BUF[0] == 0x41) //串口输入了起始符"A",正弦（e.g. A20#B200#!）
 			{
@@ -133,11 +135,14 @@ int main(void)
 				printf("Error!\r\n");
 			}
 			USART_RX_STA = 0;
+			delay_ms(20);
+			LED1 = 1;
 		}
 
 		key = KEY_Scan(0); //得到键值
 		if (key)
 		{
+			LED1 = 0;
 			switch (key)
 			{
 			case WKUP_PRES:			 //单频正弦
@@ -149,18 +154,12 @@ int main(void)
 				printf("按键控制：正弦信号\r\n");
 				break;
 			case KEY0_PRES: //RAM
-				if (flag == 0)
-				{
-					Sawtooth_wave(20000); //锯齿波，采样时间间隔输入范围：4*(1~65536)ns
-					printf("按键控制：锯齿波信号\r\n");
-					flag = !flag;
-				}
-				else
-				{
-					Square_wave(20000); //方波，采样时间间隔输入范围：4*(1~65536)ns
-					printf("按键控制：方波信号\r\n");
-					flag = !flag;
-				}
+				Sawtooth_wave(20000); //锯齿波，采样时间间隔输入范围：4*(1~65536)ns
+				printf("按键控制：锯齿波信号\r\n");
+				break;
+			case KEY2_PRES: //RAM
+				Square_wave(20000); //方波，采样时间间隔输入范围：4*(1~65536)ns
+				printf("按键控制：方波信号\r\n");
 				break;
 			case KEY1_PRES:		  //扫频
 				Amp_convert(200); //写幅度，输入范围：1-650 mV
@@ -169,6 +168,7 @@ int main(void)
 				printf("按键控制：扫频信号\r\n");
 				break;
 			}
+			LED1 = 1;
 		}
 	}
 }
